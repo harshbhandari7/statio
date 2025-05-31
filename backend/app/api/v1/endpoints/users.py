@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
+from pydantic import BaseModel
 
 from app.core import security
 from app.core.config import settings
@@ -12,13 +13,17 @@ from app.models.user import UserModel
 
 router = APIRouter()
 
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
 @router.post("/login", response_model=dict)
 def login(
     db: Session = Depends(get_db),
-    form_data: OAuth2PasswordRequestForm = Depends()
+    login_data: LoginRequest = None
 ) -> Any:
-    user = db.query(UserModel).filter(UserModel.email == form_data.username).first()
-    if not user or not security.verify_password(form_data.password, user.hashed_password):
+    user = db.query(UserModel).filter(UserModel.email == login_data.email).first()
+    if not user or not security.verify_password(login_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
@@ -28,9 +33,17 @@ def login(
     access_token = security.create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "full_name": user.full_name
+        }
+    }
 
-@router.post("/register", response_model=User)
+@router.post("/register", response_model=dict)
 def create_user(
     *,
     db: Session = Depends(get_db),
@@ -51,7 +64,21 @@ def create_user(
     db.add(user)
     db.commit()
     db.refresh(user)
-    return user
+    
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = security.create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "full_name": user.full_name
+        }
+    }
 
 @router.get("/me", response_model=User)
 def read_user_me(

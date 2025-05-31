@@ -29,6 +29,7 @@ class IncidentModel(Base):
     resolved_at = Column(DateTime(timezone=True))
 
     service = relationship("ServiceModel", back_populates="incidents")
+    updates = relationship("IncidentUpdateModel", back_populates="incident")
 
 class IncidentUpdateModel(Base):
     __tablename__ = "incident_updates"

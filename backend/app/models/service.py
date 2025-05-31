@@ -1,5 +1,6 @@
 from sqlalchemy import Boolean, Column, Integer, String, DateTime, Enum
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 import enum
 from app.db.base_class import Base
 
@@ -19,4 +20,6 @@ class ServiceModel(Base):
     status = Column(Enum(ServiceStatus), default=ServiceStatus.OPERATIONAL)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now()) 
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    incidents = relationship("IncidentModel", back_populates="service") 
