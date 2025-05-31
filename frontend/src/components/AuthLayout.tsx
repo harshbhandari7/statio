@@ -3,21 +3,16 @@ import { Outlet } from 'react-router-dom';
 
 export default function AuthLayout() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md pt-8">
+        <h2 className="text-center text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
           Statio
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Status Page & Incident Management
         </p>
       </div>
-
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <Outlet />
-        </div>
-      </div>
+      <Outlet />
     </div>
   );
 } 
