@@ -57,7 +57,7 @@
 .logo-icon {
   width: 2rem;
   height: 2rem;
-  color: white;
+  color: #FFFFFF;
 }
 
 .heading {
@@ -207,7 +207,7 @@
   padding: 0 1.5rem;
   font-size: 1rem;
   font-weight: 500;
-  color: white;
+  color: #FFFFFF;
   background: linear-gradient(to right, #2563EB, #4F46E5, #7C3AED);
   border-radius: 0.75rem;
   border: none;
@@ -316,6 +316,11 @@
 .social-button:hover {
   transform: scale(1.05);
   background-color: rgba(255, 255, 255, 0.35);
+}
+
+.social-button.github {
+  background-color: #24292e;
+  color: #FFFFFF;
 }
 
 .social-icon {

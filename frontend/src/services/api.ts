@@ -65,6 +65,13 @@ export const incidents = {
   
   delete: (id: number) =>
     api.delete(`/api/v1/incidents/${id}`),
+    
+  // Incident updates endpoints
+  getUpdates: (incidentId: number) =>
+    api.get(`/api/v1/incidents/${incidentId}/updates`),
+    
+  createUpdate: (incidentId: number, data: any) =>
+    api.post(`/api/v1/incidents/${incidentId}/updates`, data),
 };
 
 export default api;

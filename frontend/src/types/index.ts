@@ -21,10 +21,12 @@ export interface Incident {
   status: 'investigating' | 'identified' | 'monitoring' | 'resolved';
   type: 'incident' | 'maintenance';
   service_id: number;
+  service?: Service;
   is_active: boolean;
   created_at: string;
   updated_at: string;
   resolved_at: string | null;
+  updates?: IncidentUpdate[];
 }
 
 export interface IncidentUpdate {
