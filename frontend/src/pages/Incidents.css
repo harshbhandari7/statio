@@ -147,11 +147,11 @@
 }
 
 .incident-item.status-investigating::before {
-  background-color: #F59E0B;
+  background-color: #EF4444;
 }
 
 .incident-item.status-identified::before {
-  background-color: #EF4444;
+  background-color: #F59E0B;
 }
 
 .incident-item.status-monitoring::before {
@@ -228,12 +228,12 @@
 
 .incident-badge.status-investigating {
   background-color: rgba(245, 158, 11, 0.1);
-  color: #F59E0B;
+  color:  #EF4444;
 }
 
 .incident-badge.status-identified {
   background-color: rgba(239, 68, 68, 0.1);
-  color: #EF4444;
+  color: #F59E0B;
 }
 
 .incident-badge.status-monitoring {

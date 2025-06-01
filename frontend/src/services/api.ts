@@ -1,9 +1,18 @@
 import axios from 'axios';
+import { StatusOverview, Service, Incident, Maintenance, TimelineEvent } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // Create axios instance with default config
 const api = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Create public API instance without auth interceptor
+const publicApiInstance = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -73,5 +82,60 @@ export const incidents = {
   createUpdate: (incidentId: number, data: any) =>
     api.post(`/api/v1/incidents/${incidentId}/updates`, data),
 };
+
+// Public endpoints (no authentication required)
+export const publicApi = {
+  // Status overview
+  getStatus: async (): Promise<StatusOverview> => {
+    const response = await publicApiInstance.get('/api/v1/public/status');
+    return response.data;
+  },
+  
+  // Services
+  getServices: async (): Promise<Service[]> => {
+    const response = await publicApiInstance.get('/api/v1/public/services');
+    return response.data;
+  },
+  
+  getServiceById: async (id: number): Promise<Service> => {
+    const response = await publicApiInstance.get(`/api/v1/public/services/${id}`);
+    return response.data;
+  },
+  
+  // Incidents
+  getActiveIncidents: async (): Promise<Incident[]> => {
+    const response = await publicApiInstance.get('/api/v1/public/incidents/active');
+    return response.data;
+  },
+  
+  getIncidentById: async (id: number): Promise<Incident> => {
+    const response = await publicApiInstance.get(`/api/v1/public/incidents/${id}`);
+    return response.data;
+  },
+  
+  // Maintenances
+  getActiveMaintenances: async (): Promise<Maintenance[]> => {
+    const response = await publicApiInstance.get('/api/v1/public/maintenances/active');
+    return response.data;
+  },
+  
+  getMaintenanceById: async (id: number): Promise<Maintenance> => {
+    const response = await publicApiInstance.get(`/api/v1/public/maintenances/${id}`);
+    return response.data;
+  },
+  
+  // Timeline
+  getTimeline: async (skip: number = 0, limit: number = 20): Promise<TimelineEvent[]> => {
+    const response = await publicApiInstance.get('/api/v1/public/timeline', {
+      params: { skip, limit }
+    });
+    return response.data;
+  }
+};
+
+// Legacy public methods (for backward compatibility)
+export const getPublicStatus = publicApi.getStatus;
+export const getPublicIncidents = publicApi.getActiveIncidents;
+export const getPublicMaintenances = publicApi.getActiveMaintenances;
 
 export default api;

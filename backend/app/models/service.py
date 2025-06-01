@@ -22,4 +22,5 @@ class ServiceModel(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
-    incidents = relationship("IncidentModel", back_populates="service") 
+    incidents = relationship("IncidentModel", back_populates="service")
+    maintenances = relationship("MaintenanceModel", back_populates="service")

@@ -1,0 +1,667 @@
+/* frontend/src/pages/StatusPage.css */
+.status-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+  line-height: 1.6;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, #1a1c2e 0%, #16213e 100%);
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.status-page-loading,
+.status-page-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.25rem;
+  background: linear-gradient(135deg, #1a1c2e 0%, #16213e 100%);
+  color: #FFFFFF;
+}
+
+.status-header {
+  padding: 2.5rem 0 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.status-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+}
+
+.status-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #FFFFFF 0%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.overall-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.overall-status .status-indicator {
+  width: 16px;
+  height: 16px;
+}
+
+.status-operational .status-indicator,
+.status-resolved .status-indicator,
+.status-completed .status-indicator {
+  background-color: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.status-degraded .status-indicator,
+.status-monitoring .status-indicator,
+.status-scheduled .status-indicator {
+  background-color: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+.status-partial_outage .status-indicator,
+.status-investigating .status-indicator,
+.status-in_progress .status-indicator {
+  background-color: #f97316;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+}
+
+.status-major_outage .status-indicator,
+.status-identified .status-indicator {
+  background-color: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+.status-maintenance .status-indicator,
+.status-cancelled .status-indicator {
+  background-color: #3b82f6;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+}
+
+.last-updated {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+main.container {
+  flex: 1;
+}
+
+main.container section {
+  margin-bottom: 3rem;
+}
+
+main.container h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  position: relative;
+  display: inline-block;
+}
+
+main.container h2::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.status-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.status-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.status-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+}
+
+.status-card.status-operational::before {
+  background-color: #10b981;
+}
+
+.status-card.status-degraded::before {
+  background-color: #f59e0b;
+}
+
+.status-card.status-partial_outage::before {
+  background-color: #f97316;
+}
+
+.status-card.status-major_outage::before {
+  background-color: #ef4444;
+}
+
+.status-card.status-maintenance::before {
+  background-color: #3b82f6;
+}
+
+.status-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+.status-card h3 {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.status-text {
+  text-transform: capitalize;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.service-description {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.incident-list,
+.maintenance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.incident-item,
+.maintenance-item {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.incident-item::before,
+.maintenance-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.incident-item.status-investigating::before,
+.maintenance-item.status-scheduled::before {
+  background-color: #f59e0b;
+}
+
+.incident-item.status-identified::before {
+  background-color: #ef4444;
+}
+
+.incident-item.status-monitoring::before,
+.maintenance-item.status-in_progress::before {
+  background-color: #3b82f6;
+}
+
+.incident-item.status-resolved::before,
+.maintenance-item.status-completed::before {
+  background-color: #10b981;
+}
+
+.maintenance-item.status-cancelled::before {
+  background-color: #6b7280;
+}
+
+.incident-item:hover,
+.maintenance-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.incident-header,
+.maintenance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.incident-header h3,
+.maintenance-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.incident-description,
+.maintenance-description {
+  margin: 0 0 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.incident-meta,
+.maintenance-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.incident-service,
+.maintenance-service {
+  display: inline-flex;
+  align-items: center;
+}
+
+.incident-updates {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.incident-updates h4 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.updates-timeline {
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.updates-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.update-item {
+  position: relative;
+  padding-bottom: 1.25rem;
+}
+
+.update-item:last-child {
+  padding-bottom: 0;
+}
+
+.update-marker {
+  position: absolute;
+  left: -1.5rem;
+  top: 0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.update-content {
+  padding-bottom: 0.5rem;
+}
+
+.update-content p {
+  margin: 0 0 0.75rem;
+}
+
+.update-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.8rem;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-top: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -1.5rem;
+  top: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.timeline-marker.status-operational,
+.timeline-marker.status-resolved,
+.timeline-marker.status-completed {
+  background-color: #10b981;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.timeline-marker.status-degraded,
+.timeline-marker.status-monitoring,
+.timeline-marker.status-scheduled {
+  background-color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.timeline-marker.status-partial_outage,
+.timeline-marker.status-investigating,
+.timeline-marker.status-in_progress {
+  background-color: #f97316;
+  border-color: rgba(249, 115, 22, 0.3);
+}
+
+.timeline-marker.status-major_outage,
+.timeline-marker.status-identified {
+  background-color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.timeline-marker.status-maintenance,
+.timeline-marker.status-cancelled {
+  background-color: #3b82f6;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.timeline-content {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.timeline-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.timeline-type {
+  font-size: 0.75rem;
+  text-transform: capitalize;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.timeline-type.incident {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.timeline-type.maintenance {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+.timeline-type.service_status_change {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+.timeline-content p {
+  margin: 0 0 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.timeline-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge.status-operational,
+.status-badge.status-resolved,
+.status-badge.status-completed {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+}
+
+.status-badge.status-degraded,
+.status-badge.status-monitoring,
+.status-badge.status-scheduled {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+}
+
+.status-badge.status-partial_outage,
+.status-badge.status-investigating,
+.status-badge.status-in_progress {
+  background-color: rgba(249, 115, 22, 0.2);
+  color: #fdba74;
+}
+
+.status-badge.status-major_outage,
+.status-badge.status-identified {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.status-badge.status-maintenance,
+.status-badge.status-cancelled {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+.no-events {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.status-footer {
+  margin-top: 3rem;
+  padding: 2rem 0;
+  position: relative;
+}
+
+.status-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+}
+
+.footer-content {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.footer-content p {
+  margin: 0.5rem 0;
+}
+
+.admin-link {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-link a {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 6px;
+  color: #FFFFFF;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.admin-link a:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .status-header h1 {
+    font-size: 2rem;
+  }
+  
+  .status-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .incident-header,
+  .maintenance-header,
+  .timeline-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .incident-meta,
+  .maintenance-meta,
+  .timeline-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .timeline-content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .status-header {
+    padding: 1.5rem 0 1rem;
+  }
+  
+  .status-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  main.container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .incident-item,
+  .maintenance-item,
+  .timeline-content {
+    padding: 1rem;
+  }
+}

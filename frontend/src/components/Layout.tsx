@@ -9,6 +9,7 @@ import {
   WrenchScrewdriverIcon,
   ExclamationTriangleIcon,
   UserCircleIcon,
+  QueueListIcon
 } from '@heroicons/react/24/outline';
 import './Layout.css';
 
@@ -17,6 +18,7 @@ const navigation = [
   { name: 'Services', href: '/services', icon: WrenchScrewdriverIcon },
   { name: 'Incidents', href: '/incidents', icon: ExclamationTriangleIcon },
   { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
+  { name: 'Status', href: '/status', icon: QueueListIcon },
 ];
 
 export default function Layout() {

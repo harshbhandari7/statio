@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Services from './pages/Services';
 import Incidents from './pages/Incidents';
+import StatusPage from './pages/StatusPage';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -27,6 +28,12 @@ function App() {
             <Route path="/register" element={<Register />} />
           </Route>
 
+          {/* Public Status page */}
+          <Route path="/status" element={<StatusPage />} />
+
+          {/* Make root path redirect to status page for public users */}
+          <Route path="/" element={<StatusPage />} />
+
           {/* Protected routes */}
           <Route
             element={
@@ -38,10 +45,9 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/services" element={<Services />} />
             <Route path="/incidents" element={<Incidents />} />
+            {/* Add a route for admin to access dashboard from status page */}
+            <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
           </Route>
-
-          {/* Redirect root to dashboard */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>
     </Router>

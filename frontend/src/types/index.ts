@@ -36,3 +36,33 @@ export interface IncidentUpdate {
   status: 'investigating' | 'identified' | 'monitoring' | 'resolved';
   created_at: string;
 }
+
+export interface Maintenance {
+  id: number;
+  title: string;
+  description: string;
+  status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+  scheduled_start: string;
+  scheduled_end: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  service_id: number;
+  service?: Service;
+}
+
+export interface TimelineEvent {
+  type: 'incident' | 'maintenance' | 'service_status_change';
+  id: number;
+  title: string;
+  description?: string;
+  status: string;
+  timestamp: string;
+}
+
+export interface StatusOverview {
+  services: Service[];
+  incidents: Incident[];
+  maintenances: Maintenance[];
+  timeline: TimelineEvent[];
+}
