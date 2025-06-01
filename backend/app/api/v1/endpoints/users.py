@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from app.core import security
 from app.core.config import settings
 from app.db.session import get_db
-from app.schemas.user import User, UserCreate, UserUpdate
+from app.schemas.user import User, UserCreate, UserUpdate, UserRole
 from app.models.user import UserModel
 
 router = APIRouter()
@@ -39,7 +39,9 @@ def login(
         "user": {
             "id": user.id,
             "email": user.email,
-            "full_name": user.full_name
+            "full_name": user.full_name,
+            "role": user.role,
+            "is_superuser": user.is_superuser
         }
     }
 
@@ -84,6 +86,9 @@ def create_user(
 def read_user_me(
     current_user: UserModel = Depends(security.get_current_user),
 ) -> Any:
+    """
+    Get current user.
+    """
     return current_user
 
 @router.put("/me", response_model=User)
@@ -102,4 +107,48 @@ def update_user_me(
     db.add(current_user)
     db.commit()
     db.refresh(current_user)
-    return current_user 
+    return current_user
+
+@router.get("/", response_model=List[User])
+def read_users(
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 100,
+    current_user: UserModel = Depends(security.admin_only()),
+) -> Any:
+    """
+    Retrieve users. Only accessible to admin users.
+    """
+    users = db.query(UserModel).offset(skip).limit(limit).all()
+    return users
+
+@router.patch("/users/{user_id}/role", response_model=User)
+def update_user_role(
+    *,
+    db: Session = Depends(get_db),
+    user_id: int,
+    role: UserRole,
+    current_user: UserModel = Depends(security.admin_only()),
+) -> Any:
+    """
+    Update a user's role. Only accessible to admin users.
+    """
+    user = db.query(UserModel).filter(UserModel.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user with this ID does not exist in the system",
+        )
+    
+    # Prevent changing the role of a superuser
+    if user.is_superuser and current_user.id != user.id:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot change the role of a superuser",
+        )
+    
+    user.role = role
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user

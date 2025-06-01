@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import Services from './pages/Services';
 import Incidents from './pages/Incidents';
 import StatusPage from './pages/StatusPage';
+import Users from './pages/Users';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -45,6 +46,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/services" element={<Services />} />
             <Route path="/incidents" element={<Incidents />} />
+            <Route path="/users" element={<Users />} />
             {/* Add a route for admin to access dashboard from status page */}
             <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
           </Route>

@@ -199,20 +199,29 @@
 .user-name {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #374151;
+  color: #1F2937;
+  margin-bottom: 0.25rem;
+}
+
+.user-role {
+  font-size: 0.75rem;
+  color: #6B7280;
+  margin-bottom: 0.5rem;
+  padding: 0.125rem 0.5rem;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 0.25rem;
+  display: inline-block;
 }
 
 .signout-button {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #6B7280;
+  text-decoration: underline;
   background: none;
   border: none;
-  padding: 0.25rem 0;
+  padding: 0;
   cursor: pointer;
   transition: color 0.2s;
-  display: flex;
-  align-items: center;
-  margin-top: 0.25rem;
 }
 
 .signout-button:hover {

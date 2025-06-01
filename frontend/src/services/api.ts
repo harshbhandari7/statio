@@ -40,6 +40,15 @@ export const auth = {
     api.get('/api/v1/users/me'),
 };
 
+// User management endpoints (admin only)
+export const users = {
+  getAll: () => 
+    api.get('/api/v1/users'),
+    
+  updateRole: (userId: number, role: 'admin' | 'manager' | 'viewer') =>
+    api.put(`/api/v1/users/${userId}/role`, { role }),
+};
+
 // Services endpoints
 export const services = {
   getAll: () =>

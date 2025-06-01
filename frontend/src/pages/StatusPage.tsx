@@ -140,7 +140,7 @@ export default function StatusPage() {
                               <p>{update.message}</p>
                               <div className="update-meta">
                                 <span className={`status-badge status-${update.status}`}>
-                                  {getStatusText(update.status)}
+                                  {update?.status && getStatusText(update.status)}
                                 </span>
                                 <span className="update-date">{formatDate(update.created_at)}</span>
                               </div>
@@ -165,7 +165,7 @@ export default function StatusPage() {
                   <div className="maintenance-header">
                     <h3>{maintenance.title}</h3>
                     <span className={`status-badge status-${maintenance.status}`}>
-                      {getStatusText(maintenance.status)}
+                      {maintenance?.status && getStatusText(maintenance.status)}
                     </span>
                   </div>
                   <p className="maintenance-description">{maintenance.description}</p>
@@ -200,7 +200,7 @@ export default function StatusPage() {
                     {event.description && <p>{event.description}</p>}
                     <div className="timeline-meta">
                       <span className={`status-badge status-${event.status}`}>
-                        {getStatusText(event.status)}
+                        {event?.status && getStatusText(event.status)}
                       </span>
                       <span className="timeline-date">{formatDate(event.timestamp)}</span>
                     </div>

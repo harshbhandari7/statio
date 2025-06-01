@@ -35,7 +35,7 @@ class TimelineEvent(BaseModel):
     id: int
     title: str
     description: Optional[str] = None
-    status: str
+    status: Optional[str] = "unknown"
     timestamp: datetime
     service_id: Optional[int] = None
     service_name: Optional[str] = None

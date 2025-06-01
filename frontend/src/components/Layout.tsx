@@ -9,27 +9,36 @@ import {
   WrenchScrewdriverIcon,
   ExclamationTriangleIcon,
   UserCircleIcon,
-  QueueListIcon
+  QueueListIcon,
+  UsersIcon
 } from '@heroicons/react/24/outline';
 import './Layout.css';
 
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-  { name: 'Services', href: '/services', icon: WrenchScrewdriverIcon },
-  { name: 'Incidents', href: '/incidents', icon: ExclamationTriangleIcon },
-  { name: 'Analytics', href: '/analytics', icon: ChartBarIcon },
-  { name: 'Status', href: '/status', icon: QueueListIcon },
+// Define navigation items with role requirements
+const navigationItems = [
+  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, roles: ['viewer', 'manager', 'admin'] },
+  { name: 'Services', href: '/services', icon: WrenchScrewdriverIcon, roles: ['viewer', 'manager', 'admin'] },
+  { name: 'Incidents', href: '/incidents', icon: ExclamationTriangleIcon, roles: ['viewer', 'manager', 'admin'] },
+  { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, roles: ['viewer', 'manager', 'admin'] },
+  { name: 'Status', href: '/status', icon: QueueListIcon, roles: ['viewer', 'manager', 'admin'] },
+  { name: 'Users', href: '/users', icon: UsersIcon, roles: ['admin'] },
 ];
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [desktopSidebarCollapsed, setDesktopSidebarCollapsed] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const location = useLocation();
 
   const toggleDesktopSidebar = () => {
     setDesktopSidebarCollapsed(!desktopSidebarCollapsed);
   };
+
+  // Filter navigation items based on user role
+  const filteredNavigation = navigationItems.filter(item => {
+    if (!user || !user.role) return false;
+    return item.roles.includes(user.role) || user.is_superuser;
+  });
 
   return (
     <div className="app-container">
@@ -48,7 +57,7 @@ export default function Layout() {
             </button>
           </div>
           <nav className="sidebar-nav">
-            {navigation.map((item) => {
+            {filteredNavigation.map((item) => {
               const isActive = location.pathname === item.href;
               return (
                 <Link
@@ -68,6 +77,9 @@ export default function Layout() {
               <div className="user-info">
                 <p className="user-name">
                   {user?.full_name || user?.email}
+                </p>
+                <p className="user-role">
+                  {user?.is_superuser ? 'Superuser' : user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
                 </p>
                 <button
                   onClick={logout}
@@ -88,7 +100,7 @@ export default function Layout() {
             <h1 className="sidebar-title">Statio</h1>
           </div>
           <nav className="sidebar-nav">
-            {navigation.map((item) => {
+            {filteredNavigation.map((item) => {
               const isActive = location.pathname === item.href;
               return (
                 <Link
@@ -109,6 +121,9 @@ export default function Layout() {
                 <p className="user-name">
                   {user?.full_name || user?.email}
                 </p>
+                <p className="user-role">
+                  {user?.is_superuser ? 'Superuser' : user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
+                </p>
                 <button
                   onClick={logout}
                   className="signout-button"
@@ -126,13 +141,13 @@ export default function Layout() {
         <div className="top-navbar">
           <div>
             {/* Mobile menu button */}
-            {/* <button
+            <button
               type="button"
               className="mobile-menu-button lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <Bars3Icon className="h-6 w-6" />
-            </button> */}
+            </button>
             
             {/* Desktop menu button */}
             <button

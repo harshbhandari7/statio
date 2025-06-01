@@ -2,6 +2,8 @@ export interface User {
   id: number;
   email: string;
   full_name: string;
+  role: 'admin' | 'manager' | 'viewer';
+  is_superuser?: boolean;
 }
 
 export interface Service {

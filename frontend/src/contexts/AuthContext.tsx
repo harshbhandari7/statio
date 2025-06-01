@@ -3,12 +3,7 @@ import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { auth } from '../services/api';
-
-interface User {
-  id: number;
-  email: string;
-  full_name: string;
-}
+import { User } from '../types';
 
 interface AuthContextType {
   user: User | null;
@@ -16,6 +11,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, full_name: string) => Promise<void>;
   logout: () => void;
+  isAdmin: () => boolean;
+  isManagerOrAdmin: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -79,8 +76,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     toast.success('Logged out successfully');
   };
 
+  const isAdmin = () => {
+    return user?.is_superuser || user?.role === 'admin';
+  };
+
+  const isManagerOrAdmin = () => {
+    return user?.is_superuser || user?.role === 'admin' || user?.role === 'manager';
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      login, 
+      register, 
+      logout,
+      isAdmin,
+      isManagerOrAdmin
+    }}>
       {children}
     </AuthContext.Provider>
   );
@@ -92,4 +105,4 @@ export function useAuth() {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-} 
+}

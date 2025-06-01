@@ -15,7 +15,7 @@ def read_services(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.all_authenticated_users()),
 ) -> Any:
     services = db.query(ServiceModel).offset(skip).limit(limit).all()
     return services
@@ -25,9 +25,9 @@ def create_service(
     *,
     db: Session = Depends(get_db),
     service_in: ServiceCreate,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.manager_or_admin()),
 ) -> Any:
-    service = ServiceModel(**service_in.model_dump())
+    service = ServiceModel(**service_in.dict())
     db.add(service)
     db.commit()
     db.refresh(service)
@@ -38,13 +38,13 @@ def read_service(
     *,
     db: Session = Depends(get_db),
     service_id: int,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.all_authenticated_users()),
 ) -> Any:
     service = db.query(ServiceModel).filter(ServiceModel.id == service_id).first()
     if not service:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Service not found",
+            status_code=404,
+            detail="The service with this ID does not exist in the system",
         )
     return service
 
@@ -54,16 +54,19 @@ def update_service(
     db: Session = Depends(get_db),
     service_id: int,
     service_in: ServiceUpdate,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.manager_or_admin()),
 ) -> Any:
     service = db.query(ServiceModel).filter(ServiceModel.id == service_id).first()
     if not service:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Service not found",
+            status_code=404,
+            detail="The service with this ID does not exist in the system",
         )
-    for field, value in service_in.model_dump(exclude_unset=True).items():
+    
+    update_data = service_in.dict(exclude_unset=True)
+    for field, value in update_data.items():
         setattr(service, field, value)
+    
     db.add(service)
     db.commit()
     db.refresh(service)
@@ -74,14 +77,15 @@ def delete_service(
     *,
     db: Session = Depends(get_db),
     service_id: int,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.manager_or_admin()),
 ) -> Any:
     service = db.query(ServiceModel).filter(ServiceModel.id == service_id).first()
     if not service:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Service not found",
+            status_code=404,
+            detail="The service with this ID does not exist in the system",
         )
+    
     db.delete(service)
     db.commit()
-    return service 
+    return service

@@ -9,8 +9,8 @@ from app.schemas.incident import (
     Incident,
     IncidentCreate,
     IncidentUpdate,
-    IncidentUpdate as IncidentUpdateSchema,
     IncidentUpdateCreate,
+    IncidentUpdateInDB as IncidentUpdateSchema,
 )
 from app.models.incident import IncidentModel, IncidentUpdateModel
 from app.models.user import UserModel
@@ -22,7 +22,7 @@ def read_incidents(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.all_authenticated_users()),
 ) -> Any:
     incidents = db.query(IncidentModel).offset(skip).limit(limit).all()
     return incidents
@@ -32,9 +32,9 @@ def create_incident(
     *,
     db: Session = Depends(get_db),
     incident_in: IncidentCreate,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.manager_or_admin()),
 ) -> Any:
-    incident = IncidentModel(**incident_in.model_dump())
+    incident = IncidentModel(**incident_in.dict())
     db.add(incident)
     db.commit()
     db.refresh(incident)
@@ -45,13 +45,13 @@ def read_incident(
     *,
     db: Session = Depends(get_db),
     incident_id: int,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.all_authenticated_users()),
 ) -> Any:
     incident = db.query(IncidentModel).filter(IncidentModel.id == incident_id).first()
     if not incident:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Incident not found",
+            status_code=404,
+            detail="The incident with this ID does not exist in the system",
         )
     return incident
 
@@ -61,20 +61,18 @@ def update_incident(
     db: Session = Depends(get_db),
     incident_id: int,
     incident_in: IncidentUpdate,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.manager_or_admin()),
 ) -> Any:
     incident = db.query(IncidentModel).filter(IncidentModel.id == incident_id).first()
     if not incident:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Incident not found",
+            status_code=404,
+            detail="The incident with this ID does not exist in the system",
         )
     
-    for field, value in incident_in.model_dump(exclude_unset=True).items():
+    update_data = incident_in.dict(exclude_unset=True)
+    for field, value in update_data.items():
         setattr(incident, field, value)
-    
-    if incident_in.status == "resolved":
-        incident.resolved_at = datetime.utcnow()
     
     db.add(incident)
     db.commit()
@@ -87,28 +85,28 @@ def create_incident_update(
     db: Session = Depends(get_db),
     incident_id: int,
     update_in: IncidentUpdateCreate,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.manager_or_admin()),
 ) -> Any:
     incident = db.query(IncidentModel).filter(IncidentModel.id == incident_id).first()
     if not incident:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Incident not found",
+            status_code=404,
+            detail="The incident with this ID does not exist in the system",
         )
     
+    # Create the update
     update = IncidentUpdateModel(
         incident_id=incident_id,
         message=update_in.message,
-        status=update_in.status,
+        status=update_in.status
     )
+    db.add(update)
     
+    # Update the incident status if provided in the update
     if update_in.status:
         incident.status = update_in.status
-        if update_in.status == "resolved":
-            incident.resolved_at = datetime.utcnow()
+        db.add(incident)
     
-    db.add(update)
-    db.add(incident)
     db.commit()
     db.refresh(update)
     return update
@@ -118,9 +116,7 @@ def read_incident_updates(
     *,
     db: Session = Depends(get_db),
     incident_id: int,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.all_authenticated_users()),
 ) -> Any:
-    updates = db.query(IncidentUpdateModel).filter(
-        IncidentUpdateModel.incident_id == incident_id
-    ).all()
-    return updates 
+    updates = db.query(IncidentUpdateModel).filter(IncidentUpdateModel.incident_id == incident_id).all()
+    return updates

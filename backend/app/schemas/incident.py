@@ -10,7 +10,7 @@ class IncidentUpdateBase(BaseModel):
 class IncidentUpdateCreate(IncidentUpdateBase):
     pass
 
-class IncidentUpdate(IncidentUpdateBase):
+class IncidentUpdateInDB(IncidentUpdateBase):
     id: int
     incident_id: int
     created_at: datetime
@@ -41,10 +41,10 @@ class IncidentInDBBase(IncidentBase):
     created_at: datetime
     updated_at: Optional[datetime] = None
     resolved_at: Optional[datetime] = None
-    updates: List[IncidentUpdate] = []
+    updates: List[IncidentUpdateInDB] = []
 
     class Config:
         from_attributes = True
 
 class Incident(IncidentInDBBase):
-    pass 
+    pass
