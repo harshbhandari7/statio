@@ -104,7 +104,7 @@ export default function StatusPage() {
                 <h3>{service.name}</h3>
                 <div className="status-indicator"></div>
                 <span className="status-text">{getStatusText(service.status)}</span>
-                {service.description && <p className="service-description">{service.description}</p>}
+                {service.description && <p className="service-description-status">{service.description}</p>}
               </div>
             ))}
           </div>
@@ -118,11 +118,11 @@ export default function StatusPage() {
                 <div key={incident.id} className={`incident-item status-${incident.status}`}>
                   <div className="incident-header">
                     <h3>{incident.title}</h3>
-                    <span className={`status-badge status-${incident.status}`}>
+                    <span className={`status-badge-status status-${incident.status}`}>
                       {getStatusText(incident.status)}
                     </span>
                   </div>
-                  <p className="incident-description">{incident.description}</p>
+                  <p className="incident-description-status">{incident.description}</p>
                   <div className="incident-meta">
                     <span className="incident-date">Started: {formatDate(incident.created_at)}</span>
                     {incident.service && (
@@ -139,7 +139,7 @@ export default function StatusPage() {
                             <div className="update-content">
                               <p>{update.message}</p>
                               <div className="update-meta">
-                                <span className={`status-badge status-${update.status}`}>
+                                <span className={`status-badge-status status-${update.status}`}>
                                   {update?.status && getStatusText(update.status)}
                                 </span>
                                 <span className="update-date">{formatDate(update.created_at)}</span>
@@ -164,7 +164,7 @@ export default function StatusPage() {
                 <div key={maintenance.id} className={`maintenance-item status-${maintenance.status}`}>
                   <div className="maintenance-header">
                     <h3>{maintenance.title}</h3>
-                    <span className={`status-badge status-${maintenance.status}`}>
+                    <span className={`status-badge-status status-${maintenance.status}`}>
                       {maintenance?.status && getStatusText(maintenance.status)}
                     </span>
                   </div>
@@ -199,7 +199,7 @@ export default function StatusPage() {
                     </div>
                     {event.description && <p>{event.description}</p>}
                     <div className="timeline-meta">
-                      <span className={`status-badge status-${event.status}`}>
+                      <span className={`status-badge-status status-${event.status}`}>
                         {event?.status && getStatusText(event.status)}
                       </span>
                       <span className="timeline-date">{formatDate(event.timestamp)}</span>

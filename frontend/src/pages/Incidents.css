@@ -256,6 +256,13 @@
   color: #3B82F6;
 }
 
+.incident-description {
+  font-size: 0.875rem;
+  color: #4B5563;
+  line-height: 1.5;
+  margin: 0;
+}
+
 .incident-meta {
   display: flex;
   align-items: center;

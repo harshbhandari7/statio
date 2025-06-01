@@ -1,4 +1,13 @@
 /* frontend/src/pages/StatusPage.css */
+/* Add global scrolling styles */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .status-page {
   min-height: 100vh;
   display: flex;
@@ -8,6 +17,7 @@
   color: #FFFFFF;
   background: linear-gradient(135deg, #1a1c2e 0%, #16213e 100%);
   overflow-x: hidden;
+  overflow-y: visible; /* Allow vertical content to flow */
 }
 
 .container {
@@ -211,10 +221,10 @@ main.container h2::after {
   margin-top: 0.5rem;
 }
 
-.service-description {
+.service-description-status {
   margin-top: 1rem;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  /* color: rgba(255, 255, 255, 0.7); */
 }
 
 .incident-list,
@@ -295,7 +305,7 @@ main.container h2::after {
   flex: 1;
 }
 
-.incident-description,
+.incident-description-status,
 .maintenance-description {
   margin: 0 0 1.25rem;
   color: rgba(255, 255, 255, 0.9);
@@ -328,60 +338,37 @@ main.container h2::after {
   font-weight: 500;
 }
 
-.updates-timeline {
-  position: relative;
-  padding-left: 1.5rem;
-}
-
-.updates-timeline::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 2px;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.update-item {
-  position: relative;
-  padding-bottom: 1.25rem;
-}
-
-.update-item:last-child {
-  padding-bottom: 0;
-}
-
-.update-marker {
-  position: absolute;
-  left: -1.5rem;
-  top: 0.5rem;
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.update-content {
-  padding-bottom: 0.5rem;
-}
-
-.update-content p {
-  margin: 0 0 0.75rem;
-}
-
-.update-meta {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 0.8rem;
+.timeline-section {
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .timeline {
   position: relative;
-  padding-left: 1.5rem;
-  margin-top: 2rem;
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-top: 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.timeline::-webkit-scrollbar {
+  width: 6px;
+}
+
+.timeline::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.timeline::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.timeline::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .timeline::before {
@@ -510,7 +497,7 @@ main.container h2::after {
   color: rgba(255, 255, 255, 0.7);
 }
 
-.status-badge {
+.status-badge-status {
   display: inline-block;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
