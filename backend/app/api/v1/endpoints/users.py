@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from app.core import security
 from app.core.config import settings
 from app.db.session import get_db
-from app.schemas.user import User, UserCreate, UserUpdate, UserRole, PasswordResetRequest, PasswordReset
+from app.schemas.user import User, UserCreate, UserUpdate, UserRole, PasswordResetRequest, PasswordReset, UserRoleUpdate
 from app.models.user import UserModel
 from app.models.password_reset import PasswordResetToken
 
@@ -124,12 +124,13 @@ def read_users(
     users = db.query(UserModel).offset(skip).limit(limit).all()
     return users
 
-@router.patch("/users/{user_id}/role", response_model=User)
+@router.patch("/{user_id}/role", response_model=User)
+@router.put("/{user_id}/role", response_model=User)
 def update_user_role(
     *,
     db: Session = Depends(get_db),
     user_id: int,
-    role: UserRole,
+    role_update: UserRoleUpdate,
     current_user: UserModel = Depends(security.admin_only()),
 ) -> Any:
     """
@@ -149,7 +150,7 @@ def update_user_role(
             detail="Cannot change the role of a superuser",
         )
     
-    user.role = role
+    user.role = role_update.role
     db.add(user)
     db.commit()
     db.refresh(user)
