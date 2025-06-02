@@ -17,9 +17,9 @@ import './Layout.css';
 // Define navigation items with role requirements
 const navigationItems = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, roles: ['viewer', 'manager', 'admin'] },
-  { name: 'Services', href: '/services', icon: WrenchScrewdriverIcon, roles: ['viewer', 'manager', 'admin'] },
-  { name: 'Incidents', href: '/incidents', icon: ExclamationTriangleIcon, roles: ['viewer', 'manager', 'admin'] },
-  { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, roles: ['viewer', 'manager', 'admin'] },
+  { name: 'Services', href: '/services', icon: WrenchScrewdriverIcon, roles: ['manager', 'admin'] },
+  { name: 'Incidents', href: '/incidents', icon: ExclamationTriangleIcon, roles: ['manager', 'admin'] },
+  // { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, roles: ['admin'] },
   { name: 'Status', href: '/status', icon: QueueListIcon, roles: ['viewer', 'manager', 'admin'] },
   { name: 'Users', href: '/users', icon: UsersIcon, roles: ['admin'] },
 ];
@@ -141,13 +141,13 @@ export default function Layout() {
         <div className="top-navbar">
           <div>
             {/* Mobile menu button */}
-            <button
+            {/* <button
               type="button"
               className="mobile-menu-button lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <Bars3Icon className="h-6 w-6" />
-            </button>
+            </button> */}
             
             {/* Desktop menu button */}
             <button

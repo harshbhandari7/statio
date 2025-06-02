@@ -83,20 +83,20 @@
   animation: slideUp 0.5s ease-out;
 }
 
-.form-group {
+.form-group-login {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-.form-label {
+.form-label-login {
   font-size: 0.875rem;
   font-weight: 500;
   color: #374151;
   transition: color 0.2s ease;
 }
 
-.form-group:focus-within .form-label {
+.form-group-login:focus-within .form-label-login {
   color: #3B82F6;
 }
 

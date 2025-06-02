@@ -37,8 +37,8 @@ export default function Login() {
         </div>
 
         <form onSubmit={handleSubmit} className="form">
-          <div className="form-group">
-            <label htmlFor="email" className="form-label">
+          <div className="form-group-login">
+            <label htmlFor="email" className="form-label-login">
               Email address
             </label>
             <div className="input-group">
@@ -59,8 +59,8 @@ export default function Login() {
             </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password" className="form-label">
+          <div className="form-group-login">
+            <label htmlFor="password" className="form-label-login">
               Password
             </label>
             <div className="input-group">
@@ -96,6 +96,7 @@ export default function Login() {
             <button 
               type="button" 
               className="forgot-password"
+              onClick={() => navigate('/forgot-password')}
             >
               Forgot password?
             </button>

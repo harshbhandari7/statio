@@ -30,8 +30,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .then(response => {
           setUser(response.data);
         })
-        .catch(() => {
-          localStorage.removeItem('token');
+        .catch((error) => {
+          // Only clear token if it's an authentication error (401)
+          if (error.response && error.response.status === 401) {
+            localStorage.removeItem('token');
+          }
+          // Don't redirect on other errors
         })
         .finally(() => {
           setLoading(false);

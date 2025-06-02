@@ -82,3 +82,29 @@ def manager_or_admin():
 
 def all_authenticated_users():
     return check_user_role([UserRole.ADMIN, UserRole.MANAGER, UserRole.VIEWER])
+
+# Add these functions for password reset functionality
+def generate_password_reset_token(email: str) -> str:
+    """Generate a password reset token"""
+    delta = timedelta(hours=24)  # Token valid for 24 hours
+    now = datetime.utcnow()
+    expires = now + delta
+    exp = expires.timestamp()
+    encoded_jwt = jwt.encode(
+        {"exp": exp, "nbf": now, "sub": email, "type": "reset"},
+        settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM,
+    )
+    return encoded_jwt
+
+def verify_password_reset_token(token: str) -> Optional[str]:
+    """Verify password reset token and return email if valid"""
+    try:
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
+        if payload.get("type") != "reset":
+            return None
+        return payload["sub"]
+    except JWTError:
+        return None

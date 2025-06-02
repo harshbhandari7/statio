@@ -6,6 +6,8 @@ import AuthLayout from './components/AuthLayout';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Services from './pages/Services';
 import Incidents from './pages/Incidents';
@@ -13,8 +15,17 @@ import StatusPage from './pages/StatusPage';
 import Users from './pages/Users';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
-  return user ? <>{children}</> : <Navigate to="/login" />;
+  const { user, loading } = useAuth();
+  
+  // Check for token directly as a fallback
+  const hasToken = localStorage.getItem('token') !== null;
+  
+  // Don't redirect while still loading or if token exists
+  if (loading) {
+    return <div className="loading-screen">Loading...</div>;
+  }
+  
+  return (user || hasToken) ? <>{children}</> : <Navigate to="/login" />;
 }
 
 function App() {
@@ -27,6 +38,8 @@ function App() {
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Route>
 
           {/* Public Status page */}

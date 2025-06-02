@@ -33,8 +33,8 @@ def update_user_roles():
         else:
             # Create a new manager user if we don't have a second user
             manager_user = UserModel(
-                email="manager@statio.com",
-                hashed_password="$2b$12$RlRxMX9EvJdJx1L3tjXKJuRVjFXWk.Nc1SrLhJwx5XjBVsq3qSKSC",  # manager123
+                email="",
+                hashed_password="",
                 full_name="Statio Manager",
                 is_active=True,
                 is_superuser=False,
@@ -44,8 +44,8 @@ def update_user_roles():
         
         # Create a viewer user with a different password hash
         viewer_user = UserModel(
-            email="viewer@statio.com",
-            hashed_password="$2b$12$QzSB0ZRGPRNhV2JxOTOqAu.3UD6LbLgO4MhZ8Z3XYhRnNvuFG6Z9e",  # viewer123
+            email="",
+            hashed_password="",
             full_name="Statio Viewer",
             is_active=True,
             is_superuser=False,

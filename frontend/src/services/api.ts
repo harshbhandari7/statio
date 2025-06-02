@@ -38,6 +38,12 @@ export const auth = {
   
   getCurrentUser: () =>
     api.get('/api/v1/users/me'),
+    
+  forgotPassword: (email: string) =>
+    api.post('/api/v1/users/forgot-password', { email }),
+    
+  resetPassword: (token: string, new_password: string) =>
+    api.post('/api/v1/users/reset-password', { token, new_password }),
 };
 
 // User management endpoints (admin only)
