@@ -4,6 +4,18 @@ export interface User {
   full_name: string;
   role: 'admin' | 'manager' | 'viewer';
   is_superuser?: boolean;
+  organization_id?: number | null;
+}
+
+export interface Organization {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  logo_url?: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Service {

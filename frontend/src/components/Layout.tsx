@@ -10,7 +10,8 @@ import {
   ExclamationTriangleIcon,
   UserCircleIcon,
   QueueListIcon,
-  UsersIcon
+  UsersIcon,
+  BuildingOfficeIcon
 } from '@heroicons/react/24/outline';
 import './Layout.css';
 
@@ -22,6 +23,7 @@ const navigationItems = [
   // { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, roles: ['admin'] },
   { name: 'Status', href: '/status', icon: QueueListIcon, roles: ['viewer', 'manager', 'admin'] },
   { name: 'Users', href: '/users', icon: UsersIcon, roles: ['admin'] },
+  { name: 'Organizations', href: '/organizations', icon: BuildingOfficeIcon, roles: ['admin'] },
 ];
 
 export default function Layout() {

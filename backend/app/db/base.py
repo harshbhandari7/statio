@@ -6,3 +6,4 @@ from app.models.service import ServiceModel
 from app.models.incident import IncidentModel, IncidentUpdateModel 
 from app.models.maintenance import MaintenanceModel
 from app.models.password_reset import PasswordResetToken
+from app.models.organization import OrganizationModel

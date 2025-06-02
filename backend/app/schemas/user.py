@@ -8,6 +8,7 @@ class UserBase(BaseModel):
     full_name: Optional[str] = None
     is_active: Optional[bool] = True
     role: Optional[UserRole] = UserRole.VIEWER
+    organization_id: Optional[int] = None
 
 class UserCreate(UserBase):
     password: str
@@ -39,3 +40,6 @@ class PasswordReset(BaseModel):
 
 class UserRoleUpdate(BaseModel):
     role: UserRole
+
+class UserOrganizationUpdate(BaseModel):
+    organization_id: int

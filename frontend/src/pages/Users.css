@@ -42,7 +42,7 @@
 
 .users-table-header {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   padding: 1rem;
   border-bottom: 1px solid rgba(229, 231, 235, 0.8);
   font-weight: 600;
@@ -56,7 +56,7 @@
 
 .user-item {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   padding: 1rem;
   border-bottom: 1px solid rgba(229, 231, 235, 0.5);
   transition: background-color 0.2s;
@@ -156,6 +156,44 @@
   color: #3B82F6;
 }
 
+.organization-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.organization-selector select {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(209, 213, 219, 0.5);
+  background-color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  color: #4B5563;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.organization-selector select:focus {
+  outline: none;
+  border-color: #6366F1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.organization-badge {
+  display: inline-block;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  background: rgba(79, 70, 229, 0.1);
+  color: #4F46E5;
+}
+
+.organization-col p {
+  font-size: 0.875rem;
+  color: #6B7280;
+}
+
 .edit-button, .cancel-button {
   padding: 0.375rem 0.75rem;
   border-radius: 0.375rem;
@@ -253,7 +291,7 @@
   }
   
   .users-table-header, .user-item {
-    grid-template-columns: 1.5fr 1fr 0.8fr;
+    grid-template-columns: 1.5fr 1fr 1fr 0.8fr;
   }
   
   .roles-info {

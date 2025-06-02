@@ -52,7 +52,39 @@ export const users = {
     api.get('/api/v1/users'),
     
   updateRole: (userId: number, role: 'admin' | 'manager' | 'viewer') =>
-    api.put(`/api/v1/users/${userId}/role`, { role }),
+    api.patch(`/api/v1/users/${userId}/role`, { role }),
+    
+  updateOrganization: (userId: number, organizationId: number) =>
+    api.patch(`/api/v1/users/${userId}/organization`, { organization_id: organizationId }),
+};
+
+// Organization endpoints
+export const organizations = {
+  getAll: () =>
+    api.get('/api/v1/organizations'),
+    
+  getOne: (id: number) =>
+    api.get(`/api/v1/organizations/${id}`),
+    
+  create: (data: {
+    name: string;
+    slug: string;
+    description?: string;
+    logo_url?: string;
+    is_active?: boolean;
+  }) =>
+    api.post('/api/v1/organizations', data),
+    
+  update: (id: number, data: {
+    name?: string;
+    description?: string;
+    logo_url?: string;
+    is_active?: boolean;
+  }) =>
+    api.put(`/api/v1/organizations/${id}`, data),
+    
+  delete: (id: number) =>
+    api.delete(`/api/v1/organizations/${id}`),
 };
 
 // Services endpoints

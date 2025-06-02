@@ -1,15 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { users } from '../services/api';
+import { users, organizations } from '../services/api';
 import { User } from '../types';
 import toast from 'react-hot-toast';
 import './Users.css';
 
+interface Organization {
+  id: number;
+  name: string;
+  slug: string;
+  is_active: boolean;
+}
+
 export default function Users() {
   const [usersList, setUsersList] = useState<User[]>([]);
+  const [orgList, setOrgList] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const { user: currentUser, isAdmin } = useAuth();
+  const { user: currentUser, isAdmin, isSuperuser } = useAuth();
 
   useEffect(() => {
     // Redirect if not admin
@@ -20,6 +28,7 @@ export default function Users() {
     }
 
     fetchUsers();
+    fetchOrganizations();
   }, [currentUser]);
 
   const fetchUsers = async () => {
@@ -32,6 +41,16 @@ export default function Users() {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchOrganizations = async () => {
+    try {
+      const response = await organizations.getAll();
+      setOrgList(response.data);
+    } catch (error) {
+      toast.error('Failed to load organizations');
+      console.error(error);
     }
   };
 
@@ -50,6 +69,25 @@ export default function Users() {
       setEditingUser(null);
     } catch (error) {
       toast.error('Failed to update user role');
+      console.error(error);
+    }
+  };
+
+  const handleOrganizationChange = async (userId: number, organizationId: number) => {
+    try {
+      await users.updateOrganization(userId, organizationId);
+      toast.success('User organization updated successfully');
+      
+      // Update local state
+      setUsersList(prevUsers => 
+        prevUsers.map(u => 
+          u.id === userId ? { ...u, organization_id: organizationId } : u
+        )
+      );
+      
+      setEditingUser(null);
+    } catch (error) {
+      toast.error('Failed to update user organization');
       console.error(error);
     }
   };
@@ -89,6 +127,7 @@ export default function Users() {
         <div className="users-table-header">
           <div className="user-col">User</div>
           <div className="role-col">Role</div>
+          <div className="organization-col">Organization</div>
           <div className="actions-col">Actions</div>
         </div>
         
@@ -137,6 +176,33 @@ export default function Users() {
                   )}
                 </div>
                 
+                <div className="organization-col">
+                  {editingUser?.id === user.id ? (
+                    <div className="organization-selector">
+                      {isSuperuser() && orgList.length > 0 && (
+                        <select 
+                          value={editingUser.organization_id || ''}
+                          onChange={(e) => setEditingUser({
+                            ...editingUser, 
+                            organization_id: e.target.value ? parseInt(e.target.value) : null
+                          })}
+                        >
+                          <option value="">None</option>
+                          {orgList.map(org => (
+                            <option key={org.id} value={org.id}>{org.name}</option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                  ) : (
+                    <p>
+                      {orgList.length > 0 && user.organization_id 
+                        ? orgList.find(org => org.id === user.organization_id)?.name || 'Unknown' 
+                        : 'None'}
+                    </p>
+                  )}
+                </div>
+                
                 <div className="actions-col">
                   {!user.is_superuser && user.id !== currentUser?.id && (
                     editingUser?.id === user.id ? (
@@ -151,7 +217,7 @@ export default function Users() {
                         className="edit-button"
                         onClick={() => setEditingUser(user)}
                       >
-                        Change Role
+                        Edit
                       </button>
                     )
                   )}

@@ -8,9 +8,10 @@ from pydantic import BaseModel
 from app.core import security
 from app.core.config import settings
 from app.db.session import get_db
-from app.schemas.user import User, UserCreate, UserUpdate, UserRole, PasswordResetRequest, PasswordReset, UserRoleUpdate
+from app.schemas.user import User, UserCreate, UserUpdate, UserRole, PasswordResetRequest, PasswordReset, UserRoleUpdate, UserOrganizationUpdate
 from app.models.user import UserModel
 from app.models.password_reset import PasswordResetToken
+from app.models.organization import OrganizationModel
 
 router = APIRouter()
 
@@ -151,6 +152,42 @@ def update_user_role(
         )
     
     user.role = role_update.role
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+@router.patch("/{user_id}/organization", response_model=User)
+@router.put("/{user_id}/organization", response_model=User)
+def update_user_organization(
+    *,
+    db: Session = Depends(get_db),
+    user_id: int,
+    organization_update: UserOrganizationUpdate,
+    current_user: UserModel = Depends(security.admin_only()),
+) -> Any:
+    """
+    Update a user's organization. Only accessible to admin users.
+    """
+    user = db.query(UserModel).filter(UserModel.id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="The user with this ID does not exist in the system",
+        )
+    
+    # Check if organization exists
+    organization = db.query(OrganizationModel).filter(
+        OrganizationModel.id == organization_update.organization_id
+    ).first()
+    if not organization:
+        raise HTTPException(
+            status_code=404,
+            detail="The organization with this ID does not exist",
+        )
+    
+    # Update user's organization
+    user.organization_id = organization_update.organization_id
     db.add(user)
     db.commit()
     db.refresh(user)

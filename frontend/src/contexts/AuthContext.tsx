@@ -13,6 +13,7 @@ interface AuthContextType {
   logout: () => void;
   isAdmin: () => boolean;
   isManagerOrAdmin: () => boolean;
+  isSuperuser: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -81,11 +82,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const isAdmin = () => {
-    return user?.is_superuser || user?.role === 'admin';
+    return user?.role === 'admin' || user?.is_superuser === true;
   };
 
   const isManagerOrAdmin = () => {
-    return user?.is_superuser || user?.role === 'admin' || user?.role === 'manager';
+    return user?.role === 'admin' || user?.role === 'manager' || user?.is_superuser === true;
+  };
+
+  const isSuperuser = () => {
+    return user?.is_superuser === true;
   };
 
   return (
@@ -94,9 +99,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading, 
       login, 
       register, 
-      logout,
-      isAdmin,
-      isManagerOrAdmin
+      logout, 
+      isAdmin, 
+      isManagerOrAdmin,
+      isSuperuser
     }}>
       {children}
     </AuthContext.Provider>
