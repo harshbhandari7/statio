@@ -23,6 +23,7 @@ export interface Service {
   name: string;
   description: string;
   status: 'operational' | 'degraded' | 'partial_outage' | 'major_outage' | 'maintenance';
+  organization_id?: number | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -35,6 +36,7 @@ export interface Incident {
   status: 'investigating' | 'identified' | 'monitoring' | 'resolved';
   type: 'incident' | 'maintenance';
   service_id: number;
+  organization_id?: number | null;
   service?: Service;
   is_active: boolean;
   created_at: string;
@@ -46,6 +48,7 @@ export interface Incident {
 export interface IncidentUpdate {
   id: number;
   incident_id: number;
+  organization_id?: number | null;
   message: string;
   status: 'investigating' | 'identified' | 'monitoring' | 'resolved';
   created_at: string;
@@ -58,6 +61,7 @@ export interface Maintenance {
   status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
   scheduled_start: string;
   scheduled_end: string;
+  organization_id?: number | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;

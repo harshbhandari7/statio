@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { PlusIcon, ClockIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import type { Incident, IncidentUpdate } from '../types';
 import { incidents as incidentsApi } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
+import OrganizationBadge from '../components/OrganizationBadge';
 import IncidentModal from '../components/IncidentModal';
 import IncidentUpdateModal from '../components/IncidentUpdateModal';
 import './Incidents.css';
@@ -17,6 +19,7 @@ export default function Incidents() {
   const [activeIncidentId, setActiveIncidentId] = useState<number | null>(null);
   const [incidentUpdates, setIncidentUpdates] = useState<IncidentUpdate[]>([]);
   const [isLoadingUpdates, setIsLoadingUpdates] = useState(false);
+  const { isSuperuser } = useAuth();
 
   // Fetch all incidents on component mount
   useEffect(() => {
@@ -228,9 +231,16 @@ export default function Incidents() {
                   >
                     <div className="incident-header">
                       <div className="incident-title-container">
-                        <span className="incident-type-badge">
-                          {getIncidentTypeLabel(incident.type)}
-                        </span>
+                        <div className="incident-title-row">
+                          <span className="incident-type-badge">
+                            {getIncidentTypeLabel(incident.type)}
+                          </span>
+                          <OrganizationBadge 
+                            organizationId={incident.organization_id}
+                            size="small"
+                            className="incident-org-badge always-show"
+                          />
+                        </div>
                         <h3 className="incident-title">{incident.title}</h3>
                       </div>
                       <div className="incident-badges">

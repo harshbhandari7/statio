@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import type { Service } from '../types';
 import { services as servicesApi } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import StatusBadge from '../components/status/StatusBadge';
+import OrganizationBadge from '../components/OrganizationBadge';
 import ServiceModal from '../components/ServiceModal';
 import './Services.css';
 
@@ -10,6 +12,7 @@ export default function Services() {
   const [services, setServices] = useState<Service[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { isSuperuser } = useAuth();
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -135,7 +138,14 @@ export default function Services() {
                 >
                   <div className="service-content">
                     <div className="service-header">
-                      <p className="service-title">{service.name}</p>
+                      <div className="service-title-container">
+                        <p className="service-title">{service.name}</p>
+                        <OrganizationBadge 
+                          organizationId={service.organization_id}
+                          size="small"
+                          className="service-org-badge always-show"
+                        />
+                      </div>
                       <StatusBadge status={service.status} />
                     </div>
                     <div className="service-details">

@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import OrganizationSwitcher from './OrganizationSwitcher';
 import {
   Bars3Icon,
   XMarkIcon,
@@ -21,9 +22,9 @@ const navigationItems = [
   { name: 'Services', href: '/services', icon: WrenchScrewdriverIcon, roles: ['manager', 'admin'] },
   { name: 'Incidents', href: '/incidents', icon: ExclamationTriangleIcon, roles: ['manager', 'admin'] },
   // { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, roles: ['admin'] },
-  { name: 'Status', href: '/status', icon: QueueListIcon, roles: ['viewer', 'manager', 'admin'] },
   { name: 'Users', href: '/users', icon: UsersIcon, roles: ['admin'] },
   { name: 'Organizations', href: '/organizations', icon: BuildingOfficeIcon, roles: ['admin'] },
+  { name: 'Status', href: '/status', icon: QueueListIcon, roles: ['viewer', 'manager', 'admin'] },
 ];
 
 export default function Layout() {
@@ -81,7 +82,7 @@ export default function Layout() {
                   {user?.full_name || user?.email}
                 </p>
                 <p className="user-role">
-                  {user?.is_superuser ? 'Superuser' : user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
+                  {user?.is_superuser ? 'Superuser' : user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'User'}
                 </p>
                 <button
                   onClick={logout}
@@ -124,7 +125,7 @@ export default function Layout() {
                   {user?.full_name || user?.email}
                 </p>
                 <p className="user-role">
-                  {user?.is_superuser ? 'Superuser' : user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
+                  {user?.is_superuser ? 'Superuser' : user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'User'}
                 </p>
                 <button
                   onClick={logout}
@@ -141,7 +142,7 @@ export default function Layout() {
       {/* Main content */}
       <div className={`main-content-wrapper ${desktopSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
         <div className="top-navbar">
-          <div>
+          <div className="navbar-left">
             {/* Mobile menu button */}
             {/* <button
               type="button"
@@ -159,6 +160,14 @@ export default function Layout() {
             >
               <Bars3Icon className="h-6 w-6" />
             </button>
+          </div>
+
+          <div className="navbar-center">
+            <OrganizationSwitcher size="medium" />
+          </div>
+
+          <div className="navbar-right">
+            {/* Connection status removed - no more WebSocket */}
           </div>
         </div>
 

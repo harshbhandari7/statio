@@ -187,6 +187,17 @@
   gap: 0.5rem;
 }
 
+.incident-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.incident-org-badge {
+  flex-shrink: 0;
+}
+
 .incident-type-badge {
   display: inline-flex;
   align-items: center;
@@ -198,7 +209,7 @@
   letter-spacing: 0.05em;
   background-color: rgba(107, 114, 128, 0.1);
   color: #6B7280;
-  width: fit-content;
+  flex-shrink: 0;
 }
 
 .incident-title {
