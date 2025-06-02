@@ -46,6 +46,7 @@ build/
 *.pem
 coverage/
 .nyc_output/
+.vite
 
 # IDEs and editors
 .idea/

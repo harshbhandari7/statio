@@ -1,5 +1,5 @@
 from typing import Any, List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core import security
@@ -15,9 +15,21 @@ def read_services(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.all_authenticated_users()),
 ) -> Any:
-    services = db.query(ServiceModel).offset(skip).limit(limit).all()
+    """Get services filtered by organization."""
+    if current_user.is_superuser:
+        # Superuser sees all services
+        services = db.query(ServiceModel).offset(skip).limit(limit).all()
+    else:
+        # Regular users see only their organization's services
+        services = (
+            db.query(ServiceModel)
+            .filter(ServiceModel.organization_id == current_user.organization_id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
     return services
 
 @router.post("/", response_model=Service)
@@ -25,12 +37,22 @@ def create_service(
     *,
     db: Session = Depends(get_db),
     service_in: ServiceCreate,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.manager_or_admin()),
 ) -> Any:
-    service = ServiceModel(**service_in.model_dump())
+    """Create new service in the user's organization."""
+    service_data = service_in.dict()
+    
+    # Set organization_id to current user's organization unless superuser specifies otherwise
+    if not current_user.is_superuser:
+        service_data["organization_id"] = current_user.organization_id
+    elif service_data.get("organization_id") is None:
+        service_data["organization_id"] = current_user.organization_id
+    
+    service = ServiceModel(**service_data)
     db.add(service)
     db.commit()
     db.refresh(service)
+    
     return service
 
 @router.get("/{service_id}", response_model=Service)
@@ -38,13 +60,20 @@ def read_service(
     *,
     db: Session = Depends(get_db),
     service_id: int,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.all_authenticated_users()),
 ) -> Any:
-    service = db.query(ServiceModel).filter(ServiceModel.id == service_id).first()
+    """Get service by ID if user has access to it."""
+    query = db.query(ServiceModel).filter(ServiceModel.id == service_id)
+    
+    # Filter by organization unless superuser
+    if not current_user.is_superuser:
+        query = query.filter(ServiceModel.organization_id == current_user.organization_id)
+    
+    service = query.first()
     if not service:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Service not found",
+            status_code=404,
+            detail="The service with this ID does not exist or you don't have access to it",
         )
     return service
 
@@ -54,19 +83,35 @@ def update_service(
     db: Session = Depends(get_db),
     service_id: int,
     service_in: ServiceUpdate,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.manager_or_admin()),
 ) -> Any:
-    service = db.query(ServiceModel).filter(ServiceModel.id == service_id).first()
+    """Update service if user has access to it."""
+    query = db.query(ServiceModel).filter(ServiceModel.id == service_id)
+    
+    # Filter by organization unless superuser
+    if not current_user.is_superuser:
+        query = query.filter(ServiceModel.organization_id == current_user.organization_id)
+    
+    service = query.first()
     if not service:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Service not found",
+            status_code=404,
+            detail="The service with this ID does not exist or you don't have access to it",
         )
-    for field, value in service_in.model_dump(exclude_unset=True).items():
+    
+    update_data = service_in.dict(exclude_unset=True)
+    
+    # Prevent regular users from changing organization_id
+    if not current_user.is_superuser and "organization_id" in update_data:
+        del update_data["organization_id"]
+    
+    for field, value in update_data.items():
         setattr(service, field, value)
+    
     db.add(service)
     db.commit()
     db.refresh(service)
+    
     return service
 
 @router.delete("/{service_id}", response_model=Service)
@@ -74,14 +119,22 @@ def delete_service(
     *,
     db: Session = Depends(get_db),
     service_id: int,
-    current_user: UserModel = Depends(security.get_current_user),
+    current_user: UserModel = Depends(security.manager_or_admin()),
 ) -> Any:
-    service = db.query(ServiceModel).filter(ServiceModel.id == service_id).first()
+    """Delete service if user has access to it."""
+    query = db.query(ServiceModel).filter(ServiceModel.id == service_id)
+    
+    # Filter by organization unless superuser
+    if not current_user.is_superuser:
+        query = query.filter(ServiceModel.organization_id == current_user.organization_id)
+    
+    service = query.first()
     if not service:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Service not found",
+            status_code=404,
+            detail="The service with this ID does not exist or you don't have access to it",
         )
+    
     db.delete(service)
     db.commit()
-    return service 
+    return service
