@@ -14,6 +14,8 @@ import Incidents from './pages/Incidents';
 import StatusPage from './pages/StatusPage';
 import Users from './pages/Users';
 import Organizations from './pages/Organizations';
+import ServiceUptimePage from './pages/ServiceUptimePage';
+import Analytics from './pages/Analytics';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -52,7 +54,9 @@ function App() {
           {/* Protected routes */}
           <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/analytics" element={<Analytics />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/services/:serviceId/uptime" element={<ServiceUptimePage />} />
             <Route path="/incidents" element={<Incidents />} />
             <Route path="/users" element={<Users />} />
             <Route path="/organizations" element={<Organizations />} />

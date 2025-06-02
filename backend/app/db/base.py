@@ -7,3 +7,5 @@ from app.models.incident import IncidentModel, IncidentUpdateModel
 from app.models.maintenance import MaintenanceModel
 from app.models.password_reset import PasswordResetToken
 from app.models.organization import OrganizationModel
+# Temporarily comment out uptime imports to fix circular import
+# from app.models.uptime import UptimeMetric, UptimeReport

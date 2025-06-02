@@ -27,3 +27,4 @@ class ServiceModel(Base):
     organization = relationship("OrganizationModel", back_populates="services")
     incidents = relationship("IncidentModel", back_populates="service")
     maintenances = relationship("MaintenanceModel", back_populates="service")
+    uptime_metrics = relationship("UptimeMetric", back_populates="service")

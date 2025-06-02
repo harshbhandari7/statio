@@ -21,10 +21,10 @@ const navigationItems = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, roles: ['viewer', 'manager', 'admin'] },
   { name: 'Services', href: '/services', icon: WrenchScrewdriverIcon, roles: ['manager', 'admin'] },
   { name: 'Incidents', href: '/incidents', icon: ExclamationTriangleIcon, roles: ['manager', 'admin'] },
-  // { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, roles: ['admin'] },
   { name: 'Users', href: '/users', icon: UsersIcon, roles: ['admin'] },
   { name: 'Organizations', href: '/organizations', icon: BuildingOfficeIcon, roles: ['admin'] },
   { name: 'Status', href: '/status', icon: QueueListIcon, roles: ['viewer', 'manager', 'admin'] },
+  { name: 'Analytics', href: '/analytics', icon: ChartBarIcon, roles: ['viewer', 'manager', 'admin'] },
 ];
 
 export default function Layout() {
