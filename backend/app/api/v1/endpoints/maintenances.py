@@ -18,7 +18,20 @@ def read_maintenances(
     limit: int = 100, 
     current_user: UserModel = Depends(security.all_authenticated_users())
 ):
-    return db.query(MaintenanceModel).offset(skip).limit(limit).all()
+    """Get maintenances filtered by organization."""
+    if current_user.is_superuser:
+        # Superuser sees all maintenances
+        maintenances = db.query(MaintenanceModel).offset(skip).limit(limit).all()
+    else:
+        # Regular users see only their organization's maintenances
+        maintenances = (
+            db.query(MaintenanceModel)
+            .filter(MaintenanceModel.organization_id == current_user.organization_id)
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
+    return maintenances
 
 @router.post("/", response_model=Maintenance)
 def create_maintenance(
@@ -27,7 +40,16 @@ def create_maintenance(
     maintenance_in: MaintenanceCreate, 
     current_user: UserModel = Depends(security.manager_or_admin())
 ):
-    maintenance = MaintenanceModel(**maintenance_in.dict())
+    """Create a new maintenance in the user's organization."""
+    maintenance_data = maintenance_in.dict()
+    
+    # Set organization_id to current user's organization unless superuser specifies otherwise
+    if not current_user.is_superuser:
+        maintenance_data["organization_id"] = current_user.organization_id
+    elif maintenance_data.get("organization_id") is None:
+        maintenance_data["organization_id"] = current_user.organization_id
+    
+    maintenance = MaintenanceModel(**maintenance_data)
     db.add(maintenance)
     db.commit()
     db.refresh(maintenance)
@@ -40,9 +62,19 @@ def read_maintenance(
     maintenance_id: int, 
     current_user: UserModel = Depends(security.all_authenticated_users())
 ):
-    maintenance = db.query(MaintenanceModel).filter(MaintenanceModel.id == maintenance_id).first()
+    """Get a specific maintenance if user has access to it."""
+    query = db.query(MaintenanceModel).filter(MaintenanceModel.id == maintenance_id)
+    
+    # Filter by organization unless superuser
+    if not current_user.is_superuser:
+        query = query.filter(MaintenanceModel.organization_id == current_user.organization_id)
+    
+    maintenance = query.first()
     if not maintenance:
-        raise HTTPException(status_code=404, detail="Maintenance not found")
+        raise HTTPException(
+            status_code=404, 
+            detail="The maintenance with this ID does not exist or you don't have access to it"
+        )
     return maintenance
 
 @router.put("/{maintenance_id}", response_model=Maintenance)
@@ -53,11 +85,26 @@ def update_maintenance(
     maintenance_in: MaintenanceUpdate, 
     current_user: UserModel = Depends(security.manager_or_admin())
 ):
-    maintenance = db.query(MaintenanceModel).filter(MaintenanceModel.id == maintenance_id).first()
+    """Update a maintenance if user has access to it."""
+    query = db.query(MaintenanceModel).filter(MaintenanceModel.id == maintenance_id)
+    
+    # Filter by organization unless superuser
+    if not current_user.is_superuser:
+        query = query.filter(MaintenanceModel.organization_id == current_user.organization_id)
+    
+    maintenance = query.first()
     if not maintenance:
-        raise HTTPException(status_code=404, detail="Maintenance not found")
+        raise HTTPException(
+            status_code=404, 
+            detail="The maintenance with this ID does not exist or you don't have access to it"
+        )
     
     update_data = maintenance_in.dict(exclude_unset=True)
+    
+    # Prevent regular users from changing organization_id
+    if not current_user.is_superuser and "organization_id" in update_data:
+        del update_data["organization_id"]
+    
     for field, value in update_data.items():
         setattr(maintenance, field, value)
     
@@ -73,9 +120,19 @@ def delete_maintenance(
     maintenance_id: int, 
     current_user: UserModel = Depends(security.manager_or_admin())
 ):
-    maintenance = db.query(MaintenanceModel).filter(MaintenanceModel.id == maintenance_id).first()
+    """Delete a maintenance if user has access to it."""
+    query = db.query(MaintenanceModel).filter(MaintenanceModel.id == maintenance_id)
+    
+    # Filter by organization unless superuser
+    if not current_user.is_superuser:
+        query = query.filter(MaintenanceModel.organization_id == current_user.organization_id)
+    
+    maintenance = query.first()
     if not maintenance:
-        raise HTTPException(status_code=404, detail="Maintenance not found")
+        raise HTTPException(
+            status_code=404, 
+            detail="The maintenance with this ID does not exist or you don't have access to it"
+        )
     
     db.delete(maintenance)
     db.commit()
@@ -84,6 +141,7 @@ def delete_maintenance(
 # Public endpoint for active and recent maintenances
 @router.get("/public/active", response_model=List[Maintenance])
 def get_active_maintenances(db: Session = Depends(get_db)):
+    """Public endpoint - returns all active maintenances across organizations."""
     now = datetime.utcnow()
     recent_window = now - timedelta(days=7)
     maintenances = db.query(MaintenanceModel).filter(

@@ -19,9 +19,11 @@ class MaintenanceModel(Base):
     status = Column(Enum(MaintenanceStatus), default=MaintenanceStatus.SCHEDULED)
     scheduled_start = Column(DateTime(timezone=True), nullable=False)
     scheduled_end = Column(DateTime(timezone=True), nullable=False)
+    organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     service_id = Column(Integer, ForeignKey("services.id"))
 
     service = relationship("ServiceModel", back_populates="maintenances")
+    organization = relationship("OrganizationModel", back_populates="maintenances")

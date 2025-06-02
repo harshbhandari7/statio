@@ -8,6 +8,7 @@ class MaintenanceBase(BaseModel):
     status: str = "scheduled"
     scheduled_start: datetime
     scheduled_end: datetime
+    organization_id: Optional[int] = None
     is_active: bool = True
     service_id: int
 
@@ -20,6 +21,7 @@ class MaintenanceUpdate(MaintenanceBase):
     status: Optional[str] = None
     scheduled_start: Optional[datetime] = None
     scheduled_end: Optional[datetime] = None
+    organization_id: Optional[int] = None
     is_active: Optional[bool] = None
     service_id: Optional[int] = None
 

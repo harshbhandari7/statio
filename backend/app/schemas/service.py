@@ -9,6 +9,7 @@ class ServiceBase(BaseModel):
     name: str
     description: Optional[str] = None
     status: ServiceStatus = ServiceStatus.OPERATIONAL
+    organization_id: Optional[int] = None
     is_active: bool = True
 
 class ServiceCreate(ServiceBase):
@@ -17,6 +18,7 @@ class ServiceCreate(ServiceBase):
 class ServiceUpdate(ServiceBase):
     name: Optional[str] = None
     status: Optional[ServiceStatus] = None
+    organization_id: Optional[int] = None
     is_active: Optional[bool] = None
 
 class ServiceInDBBase(ServiceBase):

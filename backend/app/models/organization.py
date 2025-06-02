@@ -17,3 +17,7 @@ class OrganizationModel(Base):
     
     # Relationships
     users = relationship("UserModel", back_populates="organization")
+    services = relationship("ServiceModel", back_populates="organization")
+    incidents = relationship("IncidentModel", back_populates="organization")
+    incident_updates = relationship("IncidentUpdateModel", back_populates="organization")
+    maintenances = relationship("MaintenanceModel", back_populates="organization")

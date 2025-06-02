@@ -18,6 +18,7 @@ class UserUpdate(UserBase):
 
 class UserInDBBase(UserBase):
     id: int
+    is_superuser: Optional[bool] = False
     created_at: datetime
     updated_at: Optional[datetime] = None
 
