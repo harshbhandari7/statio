@@ -1,0 +1,60 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: statio-postgres
+    env: postgres
+    plan: free
+    ipAllowList: []
+
+  # Backend API Service
+  - type: web
+    name: statio-backend
+    env: python
+    plan: free
+    buildCommand: |
+      cd backend
+      pip install -r requirements.txt
+      alembic upgrade head
+      python create_initial_data.py
+    startCommand: |
+      cd backend
+      uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: POSTGRES_SERVER
+        fromService:
+          name: statio-postgres
+          type: pserv
+          property: host
+      - key: POSTGRES_USER
+        fromService:
+          name: statio-postgres
+          type: pserv
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromService:
+          name: statio-postgres
+          type: pserv
+          property: password
+      - key: POSTGRES_DB
+        fromService:
+          name: statio-postgres
+          type: pserv
+          property: database
+      - key: SECRET_KEY
+        generateValue: true
+      - key: BACKEND_CORS_ORIGINS
+        value: https://statio-frontend.onrender.com
+
+  # Frontend Static Site
+  - type: web
+    name: statio-frontend
+    env: static
+    plan: free
+    buildCommand: |
+      cd frontend
+      npm install
+      npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://statio-backend.onrender.com 
