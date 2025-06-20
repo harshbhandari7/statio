@@ -36,7 +36,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: BACKEND_CORS_ORIGINS
-        value: "*"
+        value: https://statio-frontend.onrender.com
 
   # Frontend Static Site
   - type: web
