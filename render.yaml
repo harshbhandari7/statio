@@ -38,13 +38,13 @@ services:
       - key: BACKEND_CORS_ORIGINS
         value: "*"
 
-  # Frontend Static Site
+  # Frontend Web Service with SPA routing
   - type: web
     name: statio-frontend
-    env: static
+    env: node
     plan: free
     buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/dist
+    startCommand: cd frontend && npx serve -s dist -l $PORT --single
     envVars:
       - key: VITE_API_URL
         value: https://statio-backend.onrender.com
