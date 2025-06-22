@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:5173"]  # Frontend URL
     
+    # Debug mode - controls FastAPI docs visibility
+    DEBUG: bool = False
+    
     # PostgreSQL configuration
     POSTGRES_SERVER: str = "localhost"
     POSTGRES_USER: str = "postgres"

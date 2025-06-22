@@ -28,6 +28,11 @@ export default function StatusPage() {
     setIsAuthenticated(!!token);
   }, []);
 
+  const handleLoginClick = () => {
+    // First navigate to root to reset the base URL, then to login
+    window.location.href = '/#/login';
+  };
+
   // Format date for display
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = { 
@@ -86,12 +91,28 @@ export default function StatusPage() {
     <div className="status-page">
       <header className="status-header">
         <div className="container">
-          <h1>System Status</h1>
-          <div className={`overall-status status-${overallStatus}`}>
-            <div className="status-indicator"></div>
-            <span>{getStatusText(overallStatus)}</span>
+          <div className="header-content">
+            <div className="header-left">
+              <h1>System Status</h1>
+              <div className={`overall-status status-${overallStatus}`}>
+                <div className="status-indicator"></div>
+                <span>{getStatusText(overallStatus)}</span>
+              </div>
+              <p className="last-updated">Last updated: {new Date().toLocaleString()}</p>
+            </div>
+            {!isAuthenticated && (
+              <div className="header-right">
+                <button onClick={handleLoginClick} className="login-button">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10,17 15,12 10,7"/>
+                    <line x1="15" y1="12" x2="3" y2="12"/>
+                  </svg>
+                  Login
+                </button>
+              </div>
+            )}
           </div>
-          <p className="last-updated">Last updated: {new Date().toLocaleString()}</p>
         </div>
       </header>
 
@@ -221,7 +242,7 @@ export default function StatusPage() {
             <p>For more information, please contact support.</p>
             {isAuthenticated && (
               <div className="admin-link">
-                <Link to="/admin">Admin Dashboard</Link>
+                <Link to="/admin">Dashboard</Link>
               </div>
             )}
           </div>

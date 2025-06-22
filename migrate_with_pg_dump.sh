@@ -141,17 +141,17 @@ verify_migration() {
     # Get table counts from local database
     echo "📊 Local database table counts:"
     PGPASSWORD=$LOCAL_PASSWORD psql -h $LOCAL_HOST -p $LOCAL_PORT -U $LOCAL_USER -d $LOCAL_DB -c "
-        SELECT schemaname, tablename, n_tup_ins as row_count 
+        SELECT schemaname, relname, n_tup_ins as row_count 
         FROM pg_stat_user_tables 
-        ORDER BY tablename;
+        ORDER BY relname;
     "
     
     echo ""
     echo "📊 Render database table counts:"
     PGPASSWORD=$RENDER_PASSWORD psql -h $RENDER_HOST -p $RENDER_PORT -U $RENDER_USER -d $RENDER_DB -c "
-        SELECT schemaname, tablename, n_tup_ins as row_count 
+        SELECT schemaname, relname, n_tup_ins as row_count 
         FROM pg_stat_user_tables 
-        ORDER BY tablename;
+        ORDER BY relname;
     "
 }
 

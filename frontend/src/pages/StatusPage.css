@@ -54,6 +54,65 @@ html, body {
   background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.login-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #FFFFFF;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  outline: none;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+.login-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.login-button svg {
+  transition: transform 0.2s ease;
+}
+
+.login-button:hover svg {
+  transform: translateX(2px);
+}
+
 .status-header h1 {
   margin: 0;
   font-size: 2.5rem;
@@ -601,6 +660,21 @@ main.container h2::after {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .header-right {
+    align-self: flex-end;
+  }
+  
+  .login-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+  
   .status-header h1 {
     font-size: 2rem;
   }
@@ -636,6 +710,20 @@ main.container h2::after {
   
   .status-header {
     padding: 1.5rem 0 1rem;
+  }
+  
+  .header-content {
+    gap: 0.75rem;
+  }
+  
+  .header-right {
+    align-self: stretch;
+  }
+  
+  .login-button {
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
   }
   
   .status-header h1 {

@@ -37,6 +37,8 @@ services:
         generateValue: true
       - key: BACKEND_CORS_ORIGINS
         value: "*"
+      - key: DEBUG
+        value: "false"
 
   # Frontend Web Service with SPA routing
   - type: web
